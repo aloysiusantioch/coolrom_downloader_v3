@@ -1,13 +1,14 @@
 #!/usr/bin/python3
 
-#Copyright © 2018 Victor Oliveira <victor.oliveira@gmx.com>
-#This work is free. You can redistribute it and/or modify it under the
-#terms of the Do What The Fuck You Want To Public License, Version 2,
-#as published by Sam Hocevar. See the COPYING file for more details.
-#Version 3 contributions © 2025 AloysiusAntioch
+# Copyright © 2018 Victor Oliveira <victor.oliveira@gmx.com>
+# This work is free. You can redistribute it and/or modify it under the
+# terms of the Do What The Fuck You Want To Public License, Version 2,
+# as published by Sam Hocevar. See the COPYING file for more details.
+# Version 3 contributions © 2025 AloysiusAntioch
 
-#Changelog:
-#v3.0 - Major feature expansion by AloysiusAntioch
+# Changelog:
+# v3.1 - Fixed duplicate console list issue in interactive mode
+# v3.0 - Major feature expansion by AloysiusAntioch
 # * Added support for CLI arguments:
 #     - --console / -c       : Select console by index
 #     - --letter / -l        : Filter ROMs by first letter
@@ -25,12 +26,12 @@
 # * Automatically applies user/group ownership and permissions
 # * Added progress display and graceful keyboard interrupt handling
 # * Improved error handling, formatting, and user experience
-#v2.1 - Fixed HTTP error 401
-#v2.0 - Rewritten from scratch in Python3
+# v2.1 - Fixed HTTP error 401
+# v2.0 - Rewritten from scratch in Python3
 # * The parsing system uses proper Python3 module
 # * It load supported consoles directly from the page
 # * Uses only Python3 STDLIB (No need to install other modules)
-#v1.0 - Written in BASH
+# v1.0 - Written in BASH
 
 import urllib.request as ur
 import urllib.parse
@@ -42,16 +43,16 @@ import zipfile
 import tarfile
 import gzip
 import shutil
-import py7zr  # For .7z extraction
+import py7zr
 
 buffer_size = 1024 * 8
 
 class MyHTMLParser(HTMLParser):
     def __init__(self):
         super().__init__()
-        self.data = list()
-        self.attrib = list()
-        self.starttag = list()
+        self.data = []
+        self.attrib = []
+        self.starttag = []
 
     def handle_starttag(self, tag, attrib):
         if tag:
@@ -67,32 +68,30 @@ class MyHTMLParser(HTMLParser):
 def _getHtml(url):
     req = ur.Request(url)
     req.add_header('User-Agent', 'Bla')
-    req = ur.urlopen(req)
-    html = req.read().decode()
-    return html
+    with ur.urlopen(req) as res:
+        return res.read().decode()
 
 def _getConsoles():
     url = 'http://coolrom.com.au/roms/'
     html_page = _getHtml(url)
     html_parser = MyHTMLParser()
     html_parser.feed(html_page)
-    consoles = list()
+    consoles = set()
     for line in html_parser.attrib:
         try:
-            if 'roms' in line[0][1]:
-                if len(line) == 1:
-                    console_name = line[0][1].split('/')[2]
-                    consoles.append(console_name)
+            if 'roms' in line[0][1] and len(line) == 1:
+                console_name = line[0][1].split('/')[2]
+                consoles.add(console_name)
         except:
             pass
-    return consoles
+    return sorted(list(consoles))
 
 def _getRomslist(console, letter):
     url = f'http://coolrom.com.au/roms/{console}/{letter}/'
     html_page = _getHtml(url)
     html_parser = MyHTMLParser()
     html_parser.feed(html_page)
-    roms = dict()
+    roms = {}
     for line in html_parser.attrib:
         try:
             if 'roms' in line[0][1] and len(line) == 1 and 'php' in line[0][1]:
@@ -215,7 +214,7 @@ def _downloadRom(rom_link, save_path='.', auto_clean=False, user=None, perms=Non
     if extracted and auto_clean:
         try:
             os.remove(file_path)
-            print(f'[\u2713] Cleaned up archive: {file_name}')
+            print(f'[✓] Cleaned up archive: {file_name}')
         except Exception as e:
             print(f'[!] Failed to delete archive: {e}')
 
@@ -254,7 +253,7 @@ if __name__ == '__main__':
                 ▐█· ▐█▌ ▄█▀▄ ██▪▐█▐▐▌▐█▐▐▌██▪   ▄█▀▄ ▄█▀▀█ ▐█· ▐█▌▐▀▀▪▄▐▀▀▄ 
                 ██. ██ ▐█▌.▐▌▐█▌██▐█▌██▐█▌▐█▌▐▌▐█▌.▐▌▐█ ▪▐▌██. ██ ▐█▄▄▌▐█•█▌
                 ▀▀▀▀▀•  ▀█▄▀▪ ▀▀▀▀ ▀▪▀▀ █▪.▀▀▀  ▀█▄▀▪ ▀  ▀ ▀▀▀▀▀•  ▀▀▀ .▀  ▀
-                                CoolROM Downloader - v3
+                                CoolROM Downloader - v3.1
     ''')
 
     args = parse_args()

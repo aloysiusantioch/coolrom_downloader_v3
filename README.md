@@ -75,15 +75,26 @@ sudo /usr/bin/python3 -m pip install py7zr
 
 ---
 
+## 📜 Future Development Goals
+- Silent mode (--quiet)
+- Check for missing dependencies on startup
+- Optional Logging to File with --log=logfile.txt
+- Console + ROM Lists Cache (Local)
+- Retry Mechanism for Failed Downloads
+- Better Help Output / Categorized Flags
+- Possile conversion to app for easy install
+
 ## 📜 Changelog
 
-### v3.0 – Major rewrite by **AloysiusAntioch**
+### v3.3 – Major rewrite by **AloysiusAntioch**
 
 - Added support for CLI arguments:
   - `--console`, `--letter`, `--search`, `--rom`, `--output`, `--clean`, `--user`, `--perms`
 - Extracts `.zip`, `.tar`, `.tar.gz`, `.tgz`, `.gz`, `.7z`
 - Uses `py7zr` module for 7z archive support
 - Automatically sets file ownership and permissions
+- Added safe "exit" option
+- Sorting and De-Duplication of Console and Rom Lists, sorting alphabetically
 - Overwrites files on extract, handles existing directories
 - Shows download progress and handles keyboard interrupts
 - Enhanced logging and error handling

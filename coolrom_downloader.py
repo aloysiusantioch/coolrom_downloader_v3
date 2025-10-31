@@ -7,6 +7,9 @@
 # Version 3 contributions © 2025 AloysiusAntioch
 
 # Changelog:
+# v3.3 - Added safe "exit" option in interactive menus
+#      - Sorted & de-duplicated consoles and ROMs alphabetically for consistent CLI indexing
+#      - Fixed script startup bug (parse_args order)
 # v3.1 - Fixed duplicate console list issue in interactive mode
 # v3.0 - Major feature expansion by AloysiusAntioch
 # * Added support for CLI arguments:
@@ -26,12 +29,6 @@
 # * Automatically applies user/group ownership and permissions
 # * Added progress display and graceful keyboard interrupt handling
 # * Improved error handling, formatting, and user experience
-# v2.1 - Fixed HTTP error 401
-# v2.0 - Rewritten from scratch in Python3
-# * The parsing system uses proper Python3 module
-# * It load supported consoles directly from the page
-# * Uses only Python3 STDLIB (No need to install other modules)
-# v1.0 - Written in BASH
 
 import urllib.request as ur
 import urllib.parse
@@ -101,7 +98,7 @@ def _getRomslist(console, letter):
                 roms[rom_name] = rom_link
         except:
             pass
-    return roms
+    return dict(sorted(roms.items()))
 
 def _downloadRom(rom_link, save_path='.', auto_clean=False, user=None, perms=None):
     rom_id = rom_link.split('/')[3]
@@ -160,7 +157,6 @@ def _downloadRom(rom_link, save_path='.', auto_clean=False, user=None, perms=Non
 
     print(f'\n[+] Download complete: {file_name}')
 
-    # === Auto Extraction ===
     def extract_archive(archive_path, extract_to, user=None, perms=None):
 
         def apply_permissions_and_ownership(target_dir):
@@ -253,7 +249,7 @@ if __name__ == '__main__':
                 ▐█· ▐█▌ ▄█▀▄ ██▪▐█▐▐▌▐█▐▐▌██▪   ▄█▀▄ ▄█▀▀█ ▐█· ▐█▌▐▀▀▪▄▐▀▀▄ 
                 ██. ██ ▐█▌.▐▌▐█▌██▐█▌██▐█▌▐█▌▐▌▐█▌.▐▌▐█ ▪▐▌██. ██ ▐█▄▄▌▐█•█▌
                 ▀▀▀▀▀•  ▀█▄▀▪ ▀▀▀▀ ▀▪▀▀ █▪.▀▀▀  ▀█▄▀▪ ▀  ▀ ▀▀▀▀▀•  ▀▀▀ .▀  ▀
-                                CoolROM Downloader - v3.1
+                                CoolROM Downloader - v3.3
     ''')
 
     args = parse_args()
@@ -262,13 +258,17 @@ if __name__ == '__main__':
     consoles = _getConsoles()
     for idx, console in enumerate(consoles):
         print(f'{idx}) {console}')
+    print('00) Exit CoolROM Downloader')
 
     if args.console is not None and 0 <= args.console < len(consoles):
         console_selected = args.console
         print(f'\n[+] Console selected via CLI: ({consoles[console_selected]})')
     else:
-        print('\nInput console number:')
-        console_selected = int(input('> '))
+        console_input = input('\nInput console number: ')
+        if console_input == '00':
+            print('[*] Exiting...')
+            exit(0)
+        console_selected = int(console_input)
 
     console_name = consoles[console_selected]
     roms_list = {}
@@ -289,26 +289,27 @@ if __name__ == '__main__':
             print(f'\n[+] ROM letter selected via CLI: {rom_letter}')
         else:
             print('\n== ROM SEARCH ==')
-            print('\nInput rom letter:')
-            rom_letter = input('> ')
+            rom_letter = input('\nInput rom letter: ')
+            if rom_letter.lower() == 'exit' or rom_letter == '00':
+                print('[*] Exiting...')
+                exit(0)
         roms_list = _getRomslist(console_name, rom_letter)
 
-    roms_names = list(roms_list.keys())
+    roms_names = sorted(list(roms_list.keys()))
 
     print('\n== ROM SELECT ==')
     for idx, rom_name in enumerate(roms_names):
         print(f'{idx}) {rom_name}')
+    print('00) Exit CoolROM Downloader')
 
-    selected_roms = []
     if args.rom:
-        for r in args.rom:
-            if 0 <= r < len(roms_names):
-                selected_roms.append(r)
-            else:
-                print(f'[-] Ignoring invalid ROM index: {r}')
+        selected_roms = [r for r in args.rom if 0 <= r < len(roms_names)]
     else:
-        print('\nInput rom number(s):')
-        selected_roms = list(map(int, input('> ').split()))
+        rom_input = input('\nInput rom number(s): ')
+        if rom_input.strip() == '00':
+            print('[*] Exiting...')
+            exit(0)
+        selected_roms = list(map(int, rom_input.split()))
 
     save_dir = args.output if args.output else '.'
     auto_clean = args.clean

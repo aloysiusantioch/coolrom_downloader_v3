@@ -2,7 +2,7 @@
 
 A powerful command‑line tool for downloading and extracting ROMs from [CoolROM](http://coolrom.com.au).
 
-> Version 3 was developed by **AloysiusAntioch**, building on the original work by Victor Oliveira.
+> Version 3 was developed by **AloysiusAntioch**, building on the original work by [Victor Oliveira](https://github.com/victor-oliveira1/coolrom_downloader).
 
 ---
 

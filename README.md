@@ -6,6 +6,10 @@ A powerful command‑line tool for downloading and extracting ROMs from [CoolROM
 
 ---
 
+![Screenshot](https://raw.githubusercontent.com/aloysiusantioch/coolrom_downloader_v3/refs/heads/master/coolromv3_downloader.png)
+
+---
+
 ## 🧮 Features
 
 - Console selection via CLI

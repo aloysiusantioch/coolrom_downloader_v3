@@ -84,7 +84,8 @@ sudo /usr/bin/python3 -m pip install py7zr
 - Better Help Output / Categorized Flags
 - Possile conversion to app for easy install
 
-## 📜 Changelog
+
+## 🔮 Changelog
 
 ### v3.3 – Major rewrite by **AloysiusAntioch**
 

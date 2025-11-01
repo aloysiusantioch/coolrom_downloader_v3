@@ -9,6 +9,7 @@ A powerful command‑line tool for downloading and extracting ROMs from [CoolROM
 ![Screenshot](https://raw.githubusercontent.com/aloysiusantioch/coolrom_downloader_v3/refs/heads/master/coolromv3_downloader.png)
 
 ---
+<br>
 
 ## 🧮 Features
 
@@ -24,6 +25,7 @@ A powerful command‑line tool for downloading and extracting ROMs from [CoolROM
 - Keyboard interrupt support and progress reporting
 
 ---
+<br>
 
 ## 📦 Requirements
 
@@ -39,6 +41,7 @@ sudo /usr/bin/python3 -m pip install py7zr
 ```
 
 ---
+<br>
 
 ## 🚀 Usage
 
@@ -63,6 +66,7 @@ sudo /usr/bin/python3 -m pip install py7zr
 ```
 
 ---
+<br>
 
 ## 🧰 CLI Flags
 
@@ -78,6 +82,7 @@ sudo /usr/bin/python3 -m pip install py7zr
 | `-p`, `--perms`   | Recursively chmod extracted files (e.g., `755`)       |
 
 ---
+<br>
 
 ## 📜 Future Development Goals
 - Silent mode (--quiet)
@@ -88,6 +93,8 @@ sudo /usr/bin/python3 -m pip install py7zr
 - Better Help Output / Categorized Flags
 - Possile conversion to app for easy install
 
+---
+<br>
 
 ## 🔮 Changelog
 
@@ -105,6 +112,7 @@ sudo /usr/bin/python3 -m pip install py7zr
 - Enhanced logging and error handling
 
 ---
+<br>
 
 ## 👥 Credits & License
 
@@ -118,6 +126,7 @@ See http://www.wtfpl.net/about/ for details.
 ```
 
 ---
+<br>
 
 ## ⚠️ Disclaimer
 
